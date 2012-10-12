@@ -15,6 +15,8 @@
 		>Conventions</a><br />
 	<a href="/oatia/TODO.php"
 		>TODO</a><br />
+	<a href="https://github.com/jphilli85/oatia"
+		>Source Code</a><br />
 	<a href="/oatia/logs.php"
 		>Logs</a><br />
   	<a href="/oatia/tables.php"
