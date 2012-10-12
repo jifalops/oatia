@@ -1,0 +1,7 @@
+PHP Developer Conventions. Follow these guidelines.
+
+1. Do NOT include passwords as plain text! Private data goes into the ".private" directory.
+
+2. Include "header.php" (and read it if you haven't)
+
+3. Mark things that need to be done with a "TODO" comment.

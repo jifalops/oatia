@@ -1,0 +1,9 @@
+limit is 2500/ip/day
+These examples are how it would work for a server-side geocode.
+Client-side lookups are recommended (android has a Geocoder class for implementing).
+We should use server-side lookups as a backup only.
+
+Examples
+http://maps.google.com/maps/geo?q=university+of+toledo&output=json&oe=UTF-8&key=0iINBr1ZSri9x_vs_3IYtXE8X2dO0plUIlYTa3g
+http://maps.google.com/maps/geo?q=2801+Bancroft+43606&output=json&oe=UTF-8&key=0iINBr1ZSri9x_vs_3IYtXE8X2dO0plUIlYTa3g
+http://maps.google.com/maps/geo?q=41.6638073,-83.6073732&output=json&oe=UTF-8&key=0iINBr1ZSri9x_vs_3IYtXE8X2dO0plUIlYTa3g

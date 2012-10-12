@@ -1,0 +1,16 @@
+VIEW
+agencies > agency (+ links) > locations (sorted by distance) > location details (directions) (+ link to see people at location)
+specialties > specialty (+ links) > people (sorted by distance)
+	people (narrowed from above) > member/person detail
+near me > locations and people (hide/show) (option to show list instead of map)
+links > top-level links
+my profile > member/person detail (option to share links via moving them from member_id to person_id (and back))
+
+
+INSERT
+
+
+UPDATE
+
+
+DELETE

@@ -1,0 +1,496 @@
+
+<p><a href="/oatia/index.php">Home</a><br />
+		Dev Pages => 
+	    | <a href="/oatia/logs.php">Logs</a>
+      	| <a href="/oatia/tables.php">Tables</a>
+      	| <a href="/oatia/tests.php">Tests</a>
+      	| <a href="/oatia/check_libs.php">Check Libs</a><br />
+      	Example App Lists (needs updated) =>
+      	| <a href="/oatia/lists/agency.php">Agencies</a>
+      	| <a href="/oatia/lists/member.php">Members</a>
+      	| <a href="/oatia/lists/person.php">People</a>
+      	| <a href="/oatia/lists/specialty.php">Specialties</a><br />
+	  	Android App =>
+	  	| <a href="/oatia/app/">Download</a>
+	  	| <a href="https://github.com/jphilli85/robodex">Source Code</a>
+	  	| <a href="https://docs.google.com/document/d/1e63Ta7aEZ1Tmk8QX4TsL6sKq6SAH0l-tewymY8KA_I0/edit"
+  				>Name Ideas</a>
+ 	  	| <a href="https://docs.google.com/document/d/1XmO2xmZu9NWOIn8alRYtwyOgxVUe7vzvaznx1eUEAL8/edit"
+	  			>SDK/IDE Setup</a>
+	  	| <a href="http://developer.android.com/training/index.html">Guide</a>
+		</p><hr />
+<h4>University of Toledo</h4>json:<br />
+{
+  "name": "University of Toledo",
+  "Status": {
+    "code": 200,
+    "request": "geocode"
+  },
+  "Placemark": [ {
+    "id": "p1",
+    "address": "The University of Toledo, 2801 W Bancroft St, Toledo, OH 43606, USA",
+    "AddressDetails": {
+   "Accuracy" : 9,
+   "Country" : {
+      "AdministrativeArea" : {
+         "AdministrativeAreaName" : "OH",
+         "Locality" : {
+            "AddressLine" : [ "The University of Toledo" ],
+            "LocalityName" : "Toledo",
+            "PostalCode" : {
+               "PostalCodeNumber" : "43606"
+            },
+            "Thoroughfare" : {
+               "ThoroughfareName" : "2801 W Bancroft St"
+            }
+         }
+      },
+      "CountryName" : "USA",
+      "CountryNameCode" : "US"
+   }
+},
+    "ExtendedData": {
+      "LatLonBox": {
+        "north": 41.6650515,
+        "south": 41.6528793,
+        "east": -83.6051590,
+        "west": -83.6221082
+      }
+    },
+    "Point": {
+      "coordinates": [ -83.6118958, 41.6618870, 0 ]
+    }
+  } ]
+}
+<br /><br />array:<br />
+Array
+(
+    [name] => University of Toledo
+    [Status] => Array
+        (
+            [code] => 200
+            [request] => geocode
+        )
+
+    [Placemark] => Array
+        (
+            [0] => Array
+                (
+                    [id] => p1
+                    [address] => The University of Toledo, 2801 W Bancroft St, Toledo, OH 43606, USA
+                    [AddressDetails] => Array
+                        (
+                            [Accuracy] => 9
+                            [Country] => Array
+                                (
+                                    [AdministrativeArea] => Array
+                                        (
+                                            [AdministrativeAreaName] => OH
+                                            [Locality] => Array
+                                                (
+                                                    [AddressLine] => Array
+                                                        (
+                                                            [0] => The University of Toledo
+                                                        )
+
+                                                    [LocalityName] => Toledo
+                                                    [PostalCode] => Array
+                                                        (
+                                                            [PostalCodeNumber] => 43606
+                                                        )
+
+                                                    [Thoroughfare] => Array
+                                                        (
+                                                            [ThoroughfareName] => 2801 W Bancroft St
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [CountryName] => USA
+                                    [CountryNameCode] => US
+                                )
+
+                        )
+
+                    [ExtendedData] => Array
+                        (
+                            [LatLonBox] => Array
+                                (
+                                    [north] => 41.6650515
+                                    [south] => 41.6528793
+                                    [east] => -83.605159
+                                    [west] => -83.6221082
+                                )
+
+                        )
+
+                    [Point] => Array
+                        (
+                            [coordinates] => Array
+                                (
+                                    [0] => -83.6118958
+                                    [1] => 41.661887
+                                    [2] => 0
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+<h4>2801 W Bancroft St, Toledo, OH 43606, USA</h4>json:<br />
+{
+  "name": "2801 W Bancroft St, Toledo, OH 43606, USA",
+  "Status": {
+    "code": 200,
+    "request": "geocode"
+  },
+  "Placemark": [ {
+    "id": "p1",
+    "address": "2801 W Bancroft St, Toledo, OH 43606, USA",
+    "AddressDetails": {
+   "Accuracy" : 8,
+   "Country" : {
+      "AdministrativeArea" : {
+         "AdministrativeAreaName" : "OH",
+         "Locality" : {
+            "LocalityName" : "Toledo",
+            "PostalCode" : {
+               "PostalCodeNumber" : "43606"
+            },
+            "Thoroughfare" : {
+               "ThoroughfareName" : "2801 W Bancroft St"
+            }
+         }
+      },
+      "CountryName" : "USA",
+      "CountryNameCode" : "US"
+   }
+},
+    "ExtendedData": {
+      "LatLonBox": {
+        "north": 41.6651563,
+        "south": 41.6624583,
+        "east": -83.6060242,
+        "west": -83.6087222
+      }
+    },
+    "Point": {
+      "coordinates": [ -83.6073732, 41.6638073, 0 ]
+    }
+  } ]
+}
+<br /><br />array:<br />
+Array
+(
+    [name] => 2801 W Bancroft St, Toledo, OH 43606, USA
+    [Status] => Array
+        (
+            [code] => 200
+            [request] => geocode
+        )
+
+    [Placemark] => Array
+        (
+            [0] => Array
+                (
+                    [id] => p1
+                    [address] => 2801 W Bancroft St, Toledo, OH 43606, USA
+                    [AddressDetails] => Array
+                        (
+                            [Accuracy] => 8
+                            [Country] => Array
+                                (
+                                    [AdministrativeArea] => Array
+                                        (
+                                            [AdministrativeAreaName] => OH
+                                            [Locality] => Array
+                                                (
+                                                    [LocalityName] => Toledo
+                                                    [PostalCode] => Array
+                                                        (
+                                                            [PostalCodeNumber] => 43606
+                                                        )
+
+                                                    [Thoroughfare] => Array
+                                                        (
+                                                            [ThoroughfareName] => 2801 W Bancroft St
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [CountryName] => USA
+                                    [CountryNameCode] => US
+                                )
+
+                        )
+
+                    [ExtendedData] => Array
+                        (
+                            [LatLonBox] => Array
+                                (
+                                    [north] => 41.6651563
+                                    [south] => 41.6624583
+                                    [east] => -83.6060242
+                                    [west] => -83.6087222
+                                )
+
+                        )
+
+                    [Point] => Array
+                        (
+                            [coordinates] => Array
+                                (
+                                    [0] => -83.6073732
+                                    [1] => 41.6638073
+                                    [2] => 0
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+<h4>41.661887, -83.6118958</h4>json:<br />
+{
+  "name": "41.661887,-83.6118958",
+  "Status": {
+    "code": 200,
+    "request": "geocode"
+  },
+  "Placemark": [ {
+    "id": "p1",
+    "address": "UT Private Dr, The University of Toledo, Toledo, OH 43606, USA",
+    "AddressDetails": {
+   "Accuracy" : 6,
+   "Country" : {
+      "AdministrativeArea" : {
+         "AdministrativeAreaName" : "OH",
+         "Locality" : {
+            "LocalityName" : "Toledo",
+            "PostalCode" : {
+               "PostalCodeNumber" : "43606"
+            },
+            "Thoroughfare" : {
+               "ThoroughfareName" : "UT Private Dr"
+            }
+         }
+      },
+      "CountryName" : "USA",
+      "CountryNameCode" : "US"
+   }
+},
+    "ExtendedData": {
+      "LatLonBox": {
+        "north": 41.6632792,
+        "south": 41.6605813,
+        "east": -83.6107193,
+        "west": -83.6134172
+      }
+    },
+    "Point": {
+      "coordinates": [ -83.6120873, 41.6619730, 0 ]
+    }
+  } ]
+}
+<br /><br />array:<br />
+Array
+(
+    [name] => 41.661887,-83.6118958
+    [Status] => Array
+        (
+            [code] => 200
+            [request] => geocode
+        )
+
+    [Placemark] => Array
+        (
+            [0] => Array
+                (
+                    [id] => p1
+                    [address] => UT Private Dr, The University of Toledo, Toledo, OH 43606, USA
+                    [AddressDetails] => Array
+                        (
+                            [Accuracy] => 6
+                            [Country] => Array
+                                (
+                                    [AdministrativeArea] => Array
+                                        (
+                                            [AdministrativeAreaName] => OH
+                                            [Locality] => Array
+                                                (
+                                                    [LocalityName] => Toledo
+                                                    [PostalCode] => Array
+                                                        (
+                                                            [PostalCodeNumber] => 43606
+                                                        )
+
+                                                    [Thoroughfare] => Array
+                                                        (
+                                                            [ThoroughfareName] => UT Private Dr
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [CountryName] => USA
+                                    [CountryNameCode] => US
+                                )
+
+                        )
+
+                    [ExtendedData] => Array
+                        (
+                            [LatLonBox] => Array
+                                (
+                                    [north] => 41.6632792
+                                    [south] => 41.6605813
+                                    [east] => -83.6107193
+                                    [west] => -83.6134172
+                                )
+
+                        )
+
+                    [Point] => Array
+                        (
+                            [coordinates] => Array
+                                (
+                                    [0] => -83.6120873
+                                    [1] => 41.661973
+                                    [2] => 0
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+<h4>'41.661887', '-83.6118958'</h4>json:<br />
+{
+  "name": "41.661887,-83.6118958",
+  "Status": {
+    "code": 200,
+    "request": "geocode"
+  },
+  "Placemark": [ {
+    "id": "p1",
+    "address": "UT Private Dr, The University of Toledo, Toledo, OH 43606, USA",
+    "AddressDetails": {
+   "Accuracy" : 6,
+   "Country" : {
+      "AdministrativeArea" : {
+         "AdministrativeAreaName" : "OH",
+         "Locality" : {
+            "LocalityName" : "Toledo",
+            "PostalCode" : {
+               "PostalCodeNumber" : "43606"
+            },
+            "Thoroughfare" : {
+               "ThoroughfareName" : "UT Private Dr"
+            }
+         }
+      },
+      "CountryName" : "USA",
+      "CountryNameCode" : "US"
+   }
+},
+    "ExtendedData": {
+      "LatLonBox": {
+        "north": 41.6632792,
+        "south": 41.6605813,
+        "east": -83.6107193,
+        "west": -83.6134172
+      }
+    },
+    "Point": {
+      "coordinates": [ -83.6120873, 41.6619730, 0 ]
+    }
+  } ]
+}
+<br /><br />array:<br />
+Array
+(
+    [name] => 41.661887,-83.6118958
+    [Status] => Array
+        (
+            [code] => 200
+            [request] => geocode
+        )
+
+    [Placemark] => Array
+        (
+            [0] => Array
+                (
+                    [id] => p1
+                    [address] => UT Private Dr, The University of Toledo, Toledo, OH 43606, USA
+                    [AddressDetails] => Array
+                        (
+                            [Accuracy] => 6
+                            [Country] => Array
+                                (
+                                    [AdministrativeArea] => Array
+                                        (
+                                            [AdministrativeAreaName] => OH
+                                            [Locality] => Array
+                                                (
+                                                    [LocalityName] => Toledo
+                                                    [PostalCode] => Array
+                                                        (
+                                                            [PostalCodeNumber] => 43606
+                                                        )
+
+                                                    [Thoroughfare] => Array
+                                                        (
+                                                            [ThoroughfareName] => UT Private Dr
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [CountryName] => USA
+                                    [CountryNameCode] => US
+                                )
+
+                        )
+
+                    [ExtendedData] => Array
+                        (
+                            [LatLonBox] => Array
+                                (
+                                    [north] => 41.6632792
+                                    [south] => 41.6605813
+                                    [east] => -83.6107193
+                                    [west] => -83.6134172
+                                )
+
+                        )
+
+                    [Point] => Array
+                        (
+                            [coordinates] => Array
+                                (
+                                    [0] => -83.6120873
+                                    [1] => 41.661973
+                                    [2] => 0
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+

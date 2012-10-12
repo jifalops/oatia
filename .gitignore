@@ -1,0 +1,17 @@
+# OS garbage
+Thumbs.db
+.DS_Store
+
+# File locks
+.~*
+~*
+
+# Private stuff
+.private/
+
+# Server files
+.ftpquota
+error_log
+
+# Developer files
+log.txt
