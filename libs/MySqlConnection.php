@@ -1,4 +1,6 @@
 <?php
+// TODO Either use mysqli internally or get rid of this class altogether.
+// Deprecated.
 class MySqlConnection {
     private $host, $username, $password, $database, $link;
     

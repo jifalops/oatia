@@ -60,10 +60,12 @@
 
 	echo '<h3>PHP Error Logs:</h3>'.NL;
 	$logs = get_error_logs_recursive();
-	foreach ($logs as $l) {
-		echo '<h4>'.$l.':</h4>'.NL;
-		echo '<a href="logs.php?clear='.urlencode($l).'">clear</a><br />'.NL;	
-		echo nl2br(file_get_contents($l));
+	if (is_array($logs)) {
+		foreach ($logs as $l) {
+			echo '<h4>'.$l.':</h4>'.NL;
+			echo '<a href="logs.php?clear='.urlencode($l).'">clear</a><br />'.NL;	
+			echo nl2br(file_get_contents($l));
+		}
 	}
 
 	function get_error_logs_recursive($dir=BASE_DIR) {

@@ -1,4 +1,5 @@
 <?php
+// TODO comment on how to use this
 class Log {
 	private $file;
 	private $handle;
@@ -85,7 +86,7 @@ class Log {
 		return $records;
 	}	
 
-	public function close() {
+	private function close() {
 		return fclose($this->handle);
 	}	
 

@@ -1,7 +1,0 @@
-TIME<>LEVEL<>TAG<>MESSAGE
-2012-10-11 17:43:27 -0600<>debug<>/oatia/tests.php<>debug msg
-2012-10-11 17:43:27 -0600<>error<>/oatia/tests.php<>error msg
-2012-10-11 17:43:27 -0600<>info<>/oatia/tests.php<>info msg
-2012-10-11 17:43:27 -0600<>debug<>/oatia/tests.php<>debug msg 2
-2012-10-11 17:43:27 -0600<>error<>/oatia/tests.php<>error msg 2
-2012-10-11 17:43:27 -0600<>info<>/oatia/tests.php<>info msg 2
