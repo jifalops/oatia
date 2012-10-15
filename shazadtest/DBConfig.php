@@ -7,6 +7,7 @@
  * Note from Jacob:
  * updating so that passwords are hidden.
  */
+$dont_show_navigation=true;
 require_once('../header.php');
 
 define("DB_HOST", $PRIVATE['DB_SERVER']);

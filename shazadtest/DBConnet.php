@@ -1,7 +1,7 @@
 <?php
 
 /* author: Shazad Bakhsh
- *  connect to the database
+ * connect to the database
  */
 
 class DBConnect {
