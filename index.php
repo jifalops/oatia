@@ -5,9 +5,9 @@
 <h3>Team Links</h3>
 
 	<a href="https://groups.google.com/forum/?fromgroups#!forum/eecs-6550"
-		>Our Google Group</a> (for communication)<br />
+		>Google Group</a><br />
 	<a href="https://docs.google.com/document/d/1g32TxB0TbFU9v6wwUAtT9SJKWHk9GixDxxvwvSrrPfA/edit"
-		>Team member roles</a> (Needs updated)<br />
+		>Member roles</a><br />
 
 <h3>PHP Developer Pages</h3>
 
@@ -32,12 +32,14 @@
 		>Download</a><br />
 	<a href="https://github.com/jphilli85/robodex"
 		>Source Code</a><br />
-	<a href="https://docs.google.com/document/d/1e63Ta7aEZ1Tmk8QX4TsL6sKq6SAH0l-tewymY8KA_I0/edit"
-		>Name Ideas</a><br />
 	<a href="https://docs.google.com/document/d/1XmO2xmZu9NWOIn8alRYtwyOgxVUe7vzvaznx1eUEAL8/edit"
 		>SDK/IDE Setup</a><br />
 	<a href="http://developer.android.com/training/index.html"
 		>Guide/Training</a><br />
+		
+<h3>Other Pages</h3>
+    <a href="/oatia/geo/">Geocoding</a><br />
+    <a href="/oatia/json/">JSON test</a><br />
 
 <br /><hr />
 

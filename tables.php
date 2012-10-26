@@ -24,6 +24,7 @@
   if ($table == 'all') {
     $tables = $db->get_tables();
     foreach ($tables as $table) {
+        if ($table == 'ZipCodes') continue;
       make_table($table);
     }
   }
