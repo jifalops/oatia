@@ -43,18 +43,50 @@
     * "Test" in its name.
     */
     function __autoload($class_name) {
-        
-        // Test classes should have "Test" in the name.
-        if (strpos($class_name, 'Test') === false) {            
-            include_once(LIBRARY_DIR.DS. $class_name.'.php');
+        $matches = array();
+        find_files($matches, LIBRARY_DIR, $class_name, 'php', 1);        
+        foreach ($matches as $m) {
+            require_once($m);
+        }        
+    }
+    
+    /** 
+     * $matches - an array containing the full file paths of all matches.
+     * $directory - The full path of the directory to search.
+     * Neither $filename or $extension include the dot between them. 
+     * Omitted $filename or $extension matches everything.
+     * Omitted $limit (or a limit of 0) means unlimited.
+     */
+    function find_files(&$matches, $directory, $filename=null, $extension=null, $limit=null,
+            $case_sensitive=true, $subdirs=true) {
+        // File system objects
+        $fsos = scandir($directory);
+        foreach ($fsos as $fso) {
+            $fso_full = $directory . DS . $fso;    
+            $parts = pathinfo($fso_full);            
+            if (is_file($fso_full)
+                    && (empty($filename)
+                        || ($case_sensitive && $filename == $parts['filename'])
+                        || (!$case_sensitive && strcasecmp($filename, $parts['filename'])))
+                    && (empty($extension)
+                        || ($case_sensitive && $extension == $parts['extension'])
+                        || (!$case_sensitive && strcasecmp($extension, $parts['extension'])))) {                  
+                $matches[] = $fso_full;
+                if ($limit > 0 && count($matches) >= $limit) return;
+            }            
+            else if (is_dir($fso_full) && $subdirs && $fso != '.' && $fso != '..') {
+                find_files($matches, $fso_full, $filename, $extension, $limit, $case_sensitive, $subdirs);
+            }
         }
-        else include_once(TEST_DIR.DS. $class_name.'.php');
     }
    
     // Pages that use the DB have to call $db->connect() before using other methods. 
     // TODO this should be a mysqli object.     
     $db = new MySqlConnection(Secure::DB_HOST,      Secure::DB_USERNAME, 
                               Secure::DB_PASSWORD,  Secure::DB_DATABASE);
+                              
+    $db2 = new MySqlHelper(Secure::DB_HOST,      Secure::DB_USERNAME, 
+                            Secure::DB_PASSWORD,  Secure::DB_DATABASE);
     
     // Logging mechanism for developers. Similar to Android's logging mechanism.
     $log = new Log(BASE_DIR.DS.'log.txt');

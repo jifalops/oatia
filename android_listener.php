@@ -10,11 +10,18 @@
     $request = json_decode($json, true);
     $hash_req = Secure::hash($json);
     
+    $db->connect(); 
+    
     if ($request[RequestField::REQUEST_TYPE] == RequestType::LIST_SPECIALTIES) {
-        $sql = 'SELECT * FROM `specialty`';
-        
-        $db->connect();
-        
+        $sql = 'SELECT * FROM `specialty`';        
+    }
+    elseif ($request[RequestField::REQUEST_TYPE] == RequestType::LIST_ORGANIZATIONS) {
+        $sql = 'SELECT * FROM `organization`'; 
+    }
+    elseif ($request[RequestField::REQUEST_TYPE] == RequestType::LIST_LINKS) {
+        $sql = 'SELECT * FROM `link`'; 
+    }
+    
         $results = $db->get_records($sql);
         
         $response[ResponseField::RESULTS] = $results;
@@ -41,5 +48,4 @@
        		. '<h3><u>Full contents of $_POST</u></h3>'	 	. nl2br(print_r($_POST, true));    
     
         echo $output;
-       	file_put_contents('output.html', $output);
-    }
+       	file_put_contents('output.html', $output);    

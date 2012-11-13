@@ -1,6 +1,5 @@
 <?php
-// TODO Either use mysqli internally or get rid of this class altogether.
-// Deprecated.
+// Deprecated. Use MySqlHelper instead.
 class MySqlConnection {
     private $host, $username, $password, $database, $link;
     
@@ -86,7 +85,11 @@ class MySqlConnection {
         }
     }
     
-   	// Returns an array of arrays.
+   	/** 
+   	* Formats results as a numerical array of associative arrays.
+   	* Each associative array is a row of the result, and the outer
+   	* numerical array is a list of the rows in the result.
+   	*/
     public function get_records($sql, $unique=false) {
         $result = $this->query($sql);
         if (!empty($result)) {
