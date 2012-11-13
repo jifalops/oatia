@@ -18,9 +18,6 @@
 
   if (empty($table)) $table = 'all';
 
-
-  $db->connect();
-
   if ($table == 'all') {
     $tables = $db->get_tables();
     foreach ($tables as $table) {
@@ -44,7 +41,7 @@
 SELECT * FROM `{$table}`;
 QUERY;
 
-    $records = $GLOBALS['db']->get_records($sql);
+    $records = $GLOBALS['db']->query($sql);
 
     echo '<h3>'.$table.'</h3>'.NL;
     echo '<table border="1"><tr>'.NL;

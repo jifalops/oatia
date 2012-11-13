@@ -67,6 +67,13 @@
 			echo nl2br(file_get_contents($l));
 		}
 	}
+	
+	echo '<h3>MySqli Warnings</h3>'.NL;
+	$warnings = $db->get_warnings();
+	foreach ($warnings as $w) {
+	    echo 'Warning '.$w['errno'].': '.$w['message'].'<br />'.NL;
+	}
+	
 
 	function get_error_logs_recursive($dir=BASE_DIR) {
 		// File system objects

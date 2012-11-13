@@ -10,8 +10,8 @@
 $dont_show_navigation=true;
 require_once('../header.php');
 
-define("DB_HOST", $PRIVATE['DB_SERVER']);
-define("DB_USER", $PRIVATE['DB_USERNAME']);
-define("DB_PASSWORD", $PRIVATE['DB_PASSWORD']);
-define("DB_DATABASE", $PRIVATE['DB_DATABASE']);
+define("DB_HOST", Secure::DB_HOST);
+define("DB_USER", Secure::DB_USERNAME);
+define("DB_PASSWORD", Secure::DB_PASSWORD);
+define("DB_DATABASE", Secure::DB_DATABASE);
 ?>

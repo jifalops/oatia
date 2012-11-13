@@ -1,6 +1,8 @@
 <?php    
     $dont_show_navigation = true;
 	require_once('header.php');
+	
+	
 
 	// POST request
     $json = stripslashes($_POST['request']);
@@ -9,8 +11,7 @@
 	// Process request
     $request = json_decode($json, true);
     $hash_req = Secure::hash($json);
-    
-    $db->connect(); 
+
     
     if ($request[RequestField::REQUEST_TYPE] == RequestType::LIST_SPECIALTIES) {
         $sql = 'SELECT * FROM `specialty`';        
@@ -22,7 +23,7 @@
         $sql = 'SELECT * FROM `link`'; 
     }
     
-        $results = $db->get_records($sql);
+        $results = $db->query($sql);
         
         $response[ResponseField::RESULTS] = $results;
         

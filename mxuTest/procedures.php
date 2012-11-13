@@ -1,4 +1,7 @@
 <?php
+/*
+ * Please use "oatia/libs/tests/DatabaseInterfaceTest.php" instead of this file.
+ */
 require_once('../header.php');
 //set records limit
 define(LIMIT, '50');

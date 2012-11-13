@@ -38,37 +38,37 @@ class Log {
         // newlines (\n) are not returned to their original form
     }
     
-    public function e($msg) { 
+    function e($msg, $tag=null) { 
         if ($this->verbosity >= 1)
-            return $this->log('error', $msg); 
+            return $this->log('error', $msg, $tag); 
     }
 
-    public function d($msg) { 
+    function d($msg, $tag=null) { 
         if ($this->verbosity >= 2)
-            return $this->log('debug', $msg); 
+            return $this->log('debug', $msg, $tag); 
     }
     
-    public function i($msg) { 
+    function i($msg, $tag=null) { 
         if ($this->verbosity >= 3)
-            return $this->log('info', $msg); 
+            return $this->log('info', $msg, $tag); 
     }
 
-    public function get_verbosity() {
+    function get_verbosity() {
         return $this->verbosity;
     }
 
-    public function set_verbosity($v) {
+    function set_verbosity($v) {
         if ($v == 3) $this->verbosity = 3;
         elseif ($v == 2) $this->verbosity = 2;
         elseif ($v == 1) $this->verbosity = 1;
         else $this->verbosity = 0;
     }
 
-    public function get_filename() {
+    function get_filename() {
         return $this->file;
     }
 
-    public function to_array() {
+    function to_array() {
         // Read the log file into an array with each line as an element and
         // trim the newlines so they're not part of the array elements.
         $lines = file($this->file, FILE_IGNORE_NEWLINES | FILE_SKIP_EMPTY_LINES);

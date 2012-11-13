@@ -33,7 +33,7 @@
     define('BASE_DIR_HTTP', DS.basename(BASE_DIR)); // "/oatia"
 
     // Include our private data (not part of the public code)
-    require_once(PRIVATE_DIR.DS.'private.php');
+    require_once(PRIVATE_DIR.DS.'Secure.php');
     
     /** 
     * This is called when you try to create a new instance of an object
@@ -79,14 +79,9 @@
             }
         }
     }
-   
-    // Pages that use the DB have to call $db->connect() before using other methods. 
-    // TODO this should be a mysqli object.     
-    $db = new MySqlConnection(Secure::DB_HOST,      Secure::DB_USERNAME, 
-                              Secure::DB_PASSWORD,  Secure::DB_DATABASE);
                               
-    $db2 = new MySqlHelper(Secure::DB_HOST,      Secure::DB_USERNAME, 
-                            Secure::DB_PASSWORD,  Secure::DB_DATABASE);
+    $db = new DatabaseHelper(   Secure::DB_HOST,      Secure::DB_USERNAME, 
+                                Secure::DB_PASSWORD,  Secure::DB_DATABASE);
     
     // Logging mechanism for developers. Similar to Android's logging mechanism.
     $log = new Log(BASE_DIR.DS.'log.txt');
@@ -102,14 +97,7 @@
      */
     function show_navigation() {
         echo '<a href="/oatia/index.php">Home</a>
-            | <a href="/oatia/documents/">Documents</a><br />
-            
-            Example App Lists (old)
-            | <a href="/oatia/lists/agency.php">Agencies</a>
-            | <a href="/oatia/lists/member.php">Members</a>
-            | <a href="/oatia/lists/person.php">People</a>
-            | <a href="/oatia/lists/specialty.php">Specialties</a><br />
-            
+            | <a href="/oatia/documents/">Documents</a><br />            
             <hr />'.NL;
     }
 
