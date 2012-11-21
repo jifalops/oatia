@@ -89,7 +89,7 @@ class DatabaseHelper {
      */
     function result($sql) {
 		$results = $this->query($sql, false);		
-		if (count($results) > 0 && is_array($results[0])) {
+		if (!empty($results) && !empty($results[0])) {
 		    return $results[0][0];
 		}
     }
@@ -139,7 +139,7 @@ class DatabaseHelper {
             $warnings[$i]['message'] = $w->message;
             ++$i;            
         } 
-        while ($e->next());
+        while ($w->next());
         
         return $warnings;
     }
