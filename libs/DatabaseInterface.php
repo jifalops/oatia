@@ -92,6 +92,7 @@ class DatabaseInterface {
     }
     
     //test function for searching organizations with certain area
+    // TODO make similar functions for person and member
     function locations_search($lat, $lon)
     {    	
     	$sql = "select organization_location.address , organization_location.city , organization_location.state , organization_location.zip , organization_location.latitude , organization_location.longitude from organization_location where latitude <= {$lat} + 0.1 and latitude >= {$lat} - 0.1 and longitude <= {$lon} + 0.1 and longitude >= {$lon} - 0.1";
@@ -172,8 +173,9 @@ class DatabaseInterface {
     	$this->db->query($sql);    	
     	
     	// return new id
+    	// TODO this could return a different id than expected (two created almost simultaneously)
     	$sql = "select person_id from person order by person_id DESC limit 1";
-    	return $this->db->result($sql);
+    	return $this->db->query($sql);
     }
     
     //16 - Create Specialty
@@ -182,8 +184,9 @@ class DatabaseInterface {
     	$sql = "insert into specialty set specialty ='{$specialty}'";
     	$this->db->query($sql);
     	
+    	// TODO this could return a different id than expected (two created almost simultaneously)
     	$sql = "select specialty_id from specialty order by specialty_id DESC limit 1";
-        return $this->db->result($sql);    	
+        return $this->db->query($sql);    	
     }
     
     //17 - Create Organization
@@ -192,8 +195,9 @@ class DatabaseInterface {
     	$sql = "insert into organization set organization ='{$organization}'";
     	$this->db->query($sql);
     	
+    	// TODO this could return a different id than expected (two created almost simultaneously)
     	$sql = "select organization_id from organization order by organization_id DESC limit 1";
-        return $this->db->result($sql);
+        return $this->db->query($sql);
     }
     
     //18 - Create Link
@@ -214,8 +218,9 @@ class DatabaseInterface {
     	
         $this->db->query($sql);
     	
+    	// TODO this could return a different id than expected (two created almost simultaneously)
     	$sql = "select link_id from link order by link_id DESC limit 1";
-        return $this->db->result($sql);       
+        return $this->db->query($sql);       
     }
     
     //19 - Create Organization Location
@@ -233,8 +238,9 @@ class DatabaseInterface {
     	
     	$this->db->query($sql);
     	
+    	// TODO this could return a different id than expected (two created almost simultaneously)
     	$sql = "select location_id from organization_location order by location_id DESC limit 1";
-        return $this->db->result($sql);
+        return $this->db->query($sql);
     }
     
     //20 - Edit Specialty
@@ -393,6 +399,7 @@ class DatabaseInterface {
     	
     	return $this->db->query($sql);
     }
+    
     //27 - Flag For Removal
     function create_flag($flag_by, $flag_comment = "", $organization_id="", $location_id="", $link_id="", $member_id="", $person_id="", $specialty_id="")
     {
@@ -417,6 +424,8 @@ class DatabaseInterface {
     	$sql = "select flag_id from flag order by flag_id DESC limit 1";
         return $this->db->result($sql);    	
     }
+    
+    // TODO these confirm remove functions should be called inside 'edit_flag'.
     
     //confirm remove
     function confirm_remove_person($person_id)

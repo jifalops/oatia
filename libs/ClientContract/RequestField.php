@@ -34,6 +34,7 @@
         const LONGITUDE                 = "longitude";
 
         // Common contact fields.
+        const EMAIL                     = "email";
         const EMAIL1                    = "email1";
         const EMAIL2                    = "email2";
         const PHONE1                    = "phone1";
@@ -79,8 +80,7 @@
         const TOP_LEVEL                 = "link_top_level";
 
         // Member
-        const MEMBER_ID                 = "member_id";
-        const MEMBER_EMAIL              = "member_email";
+        const MEMBER_ID                 = "member_id";        
         const USERNAME                  = "username";
         const PASSWORD                  = "password";
         const LOCATION_TIME             = "location_time";

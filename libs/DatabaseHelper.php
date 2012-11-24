@@ -57,6 +57,7 @@ class DatabaseHelper {
 
 
     function raw_query($sql) {
+        if (empty($sql)) return;
         $resource = $this->mysqli->query($sql);
         $this->log_errors();
         return $resource;
