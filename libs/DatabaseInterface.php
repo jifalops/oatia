@@ -546,41 +546,15 @@ class DatabaseInterface {
             }
         }
         
-        return array_unique($out);
-    }
-    
-    /*private function prepare_search_terms($search) {
-        // Find terms in quotes first
-        $terms = array();
-        get_quoted_terms($search, $terms);
-        // Remove the quoted terms
+        // trivial terms
         foreach ($terms as $t) {
-            $search = str_replace('"'.$t.'"', '', $search);
-        }
-        // Remove any remaining quotes
-        $search = str_replace('"', '', $search);
-        // The rest of the search terms are divided by non-alphanumeric characters (except apostrophes)      
-        $words = preg_split(preg_quote('/[^a-zA-Z0-9\']+/'), $search, null, PREG_SPLIT_NO_EMPTY);
-        foreach ($words as $w) {            
-            $terms[] = $w;
-            // Words with apostrophes are added with and without them.
-            if (strpos($w, "'") >= 0) {
-                $terms[] = str_replace("'", '', $w);
+            if ($t['is_trivial']) {
+                $out[] = $t['term'];
             }
         }
-        return $terms;
-    }
-    
-    private function get_quoted_terms($search, &$terms, $start = 0) {
-        if ($start >= strlen($search) - 2) return;
-        $pos1 = strpos($search, '"', $start);
-        $pos2 = strpos($search, '"', $pos1 + 1);
-        if ($pos2 > ($pos1 + 2)) {
-            $i = count($terms);
-            $terms[] = substr($search, $pos1 + 1, $pos2 - $pos1 - 1);
-        }  
-        get_quoted_terms($search, $terms, $pos2 + 1);   
-    }   */     
+        
+        return array_unique($out);
+    }  
     
     // Search all
     function search_all($search) {
@@ -591,7 +565,7 @@ class DatabaseInterface {
         
         $person         = $this->simple_person_search($search);
         $location       = $this->simple_location_search($search);
-        $specialty      =  $this->simple_specialty_search($search);
+        $specialty      = $this->simple_specialty_search($search);
         $organization   = $this->simple_organization_search($search);
         $link           = $this->simple_link_search($search);   
         
@@ -648,13 +622,30 @@ class DatabaseInterface {
             $results = array_merge($results, $term_results[$i]);
         }   
         
-        return $results;
+        return $this->remove_duplicates($results);
     }
     
     private static function order_terms($count1, $count2) {  
-        if ($count1 * 2 < $count2) return -1;
-        elseif ($count1 > $count2 * 2) return 1;
-        else return 0;
+        if ($count1 > $count2 * 2) return 1;        
+        elseif ($count1 * 2 < $count2) return -1;
+        else return 0; // undefined order :\
+    }
+    
+    private function remove_duplicates($results) {
+        $keys = array();
+        $len = count($results);
+        for ($i = 0; $i < $len; ++$i) {
+            foreach (array_keys($results[$i]) as $field) {
+                if ($keys[$field][$results[$i][$field]]) {                
+                    unset($results[$i]);
+                }
+                else {
+                    $keys[$field][$results[$i][$field]] = true;
+                }
+                break;
+            }
+        }       
+        return array_merge($results);
     }
     
     private function simple_link_search($string) {
