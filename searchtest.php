@@ -2,7 +2,7 @@
 require_once('header.php');
 
 $queries = new DatabaseInterface($db);
-$results = $queries->search_all($_GET['q']);
+$results = $queries->search_all($_GET['q'], $_GET['s']);
 
 echo count($results) . " results<br />";
 

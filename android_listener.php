@@ -17,8 +17,13 @@
 
     $q = new DatabaseInterface($db);
 
-    
-    if (    $request[RequestField::REQUEST_TYPE] == RequestType::LIST_SPECIALTIES) {
+    if (    $request[RequestField::REQUEST_TYPE] == RequestType::SEARCH_ALL) {
+        $results = $q->search_all(
+            $request[RequestField::SEARCH_TERMS],
+            $request[RequestField::START_POSITION]
+        );
+    }
+    elseif (    $request[RequestField::REQUEST_TYPE] == RequestType::LIST_SPECIALTIES) {
         $results = $q->specialty(
             $request[RequestField::START_POSITION]
         );

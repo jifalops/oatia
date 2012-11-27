@@ -557,7 +557,7 @@ class DatabaseInterface {
     }  
     
     // Search all
-    function search_all($search) {
+    function search_all($search, $start = 0) {
         $search = $this->clean_user_input($search);
         $terms = $this->get_prioritized_terms($search);       
         
@@ -622,7 +622,8 @@ class DatabaseInterface {
             $results = array_merge($results, $term_results[$i]);
         }   
         
-        return $this->remove_duplicates($results);
+        $results = $this->remove_duplicates($results);
+        return array_slice($results, $start, self::LIMIT);
     }
     
     private static function order_terms($count1, $count2) {  
@@ -658,7 +659,7 @@ class DatabaseInterface {
     
     private function simple_organization_search($string) {
         $sql = "select * from organization"
-            . " where organization.organization like '%$string%'"            
+            . " where organization.organization like '%$string%'"      
             . ";";
         return $this->db->query($sql);
     }
@@ -673,6 +674,7 @@ class DatabaseInterface {
             . " or email2 like '%$string%'"
             . " or phone1 like '%$string%'"
             . " or phone2 like '%$string%'"
+
             . ";";
         return $this->db->query($sql);
     }
@@ -695,7 +697,7 @@ class DatabaseInterface {
     
     private function simple_specialty_search($string) {
         $sql = "select * from specialty"
-            . " where specialty.specialty like '%$string%'"            
+            . " where specialty.specialty like '%$string%'"          
             . ";";
         return $this->db->query($sql);
     }
