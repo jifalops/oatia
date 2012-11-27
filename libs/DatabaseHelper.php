@@ -45,14 +45,16 @@ class DatabaseHelper {
     }
     
     function select_db($db) {        
-        return $this->mysqli->select_db($db);   
+        $x = $this->mysqli->select_db($db);   
         $this->log_errors();     
+        return $x;
     }
     
     /** Helps protect against injection (when charset is defined) */
     function escape($user_string) {
-        return $this->mysqli->real_escape_string($user_string);
+        $x = $this->mysqli->real_escape_string($user_string);
         $this->log_errors();
+        return $x;
     }
 
 

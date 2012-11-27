@@ -20,6 +20,13 @@ class DatabaseInterface {
     function __construct(DatabaseHelper $db) {
         $this->db = $db;
     }
+    
+    // TODO make sure all user strings are passed through this.
+    private function clean_user_input($string) {
+        // all whitespace is reduced to a single space.
+        $string = preg_replace('/\s+/', ' ', $string);
+        return $this->db->escape($string);
+    }
 
     //2Get Specialties
     function specialty($start = 0)
@@ -90,15 +97,7 @@ class DatabaseInterface {
     	$sql = $sql." limit {$start},".self::LIMIT;
     	return $this->db->query($sql);
     }
-    
-    //test function for searching organizations with certain area
-    // TODO make similar functions for person and member
-    function locations_search($lat, $lon)
-    {    	
-    	$sql = "select organization_location.address , organization_location.city , organization_location.state , organization_location.zip , organization_location.latitude , organization_location.longitude from organization_location where latitude <= {$lat} + 0.1 and latitude >= {$lat} - 0.1 and longitude <= {$lon} + 0.1 and longitude >= {$lon} - 0.1";
-    	return $this->db->query($sql);
-    }
-    
+
     //9Get Organization Locations
     function organization_locations($organization_id, $start = 0)
     {    	
@@ -421,8 +420,300 @@ class DatabaseInterface {
     	
     	$this->db->query($sql);
     	
+    	// TODO this could return a different id than expected (two created almost simultaneously)
     	$sql = "select flag_id from flag order by flag_id DESC limit 1";
-        return $this->db->result($sql);    	
+        return $this->db->query($sql);    	
+    }
+    
+    private function get_terms($search) {
+        $terms = array();
+        // treat the string as an array of chars
+        $i = 0;
+        $len = strlen($search);
+        while ($i < $len) {      
+            $end = 0;
+            // If we come across a double-quote, add everything up to the next quote as a term,
+            // unless the quotes are next to each other or there is only whitespace inside them.
+            if ($search[$i] == '"') {
+                $end = strpos($search, '"', $i + 1);
+                if ($end >= $i + 2) {
+                    $t = substr($search, $i + 1, $end - $i - 1);
+                    if (preg_match('/\S/', $t)) {
+                        $count = count($terms);
+                        $terms[$count]['term'] = $t;
+                        $terms[$count]['was_quoted'] = true;
+                        $terms[$count]['index'] = $i + 1;
+                        $terms[$count]['is_trivial'] = $this->is_trivial($t);
+                        $terms[$count]['synonyms'] = array();
+                        $terms[$count]['result_count'] = 0;
+                    }                
+                }                                            
+            }
+            // If we come across an alphanumeric character, consider it the start of another term.
+            // The term ends when a non-alphanumeric character except an apostrophe is encountered.
+            elseif (preg_match('/[a-zA-Z0-9]/', $search[$i])) {
+                $t = array();
+                $t[] = $search[$i];
+                // Allows multiple apostrophes 
+                for ($j = $i + 1; $j < $len; ++$j) {
+                    if (preg_match('/[a-zA-Z0-9\']/', $search[$j])) {
+                        $t[] = $search[$j];
+                    }
+                    else {            
+                        $end = $j;
+                        break; // inner loop
+                    }
+                }
+                if ($end == 0) $end = $len;
+                $t = implode($t);
+                $count = count($terms);
+
+                $terms[$count]['term'] = $t;
+                $terms[$count]['was_quoted'] = false;
+                $terms[$count]['index'] = $i;
+                $terms[$count]['is_trivial'] = $this->is_trivial($t);
+                $terms[$count]['synonyms'] = array();
+                $terms[$count]['result_count'] = 0;
+                             
+                if (strpos($t, "'") !== false) {
+                   $terms[$count]['synonyms'][] = str_replace("'", '', $t);
+                }
+            }
+            if ($end > $i) $i = $end + 1;
+            else ++$i;
+        }
+        return $terms;
+    }
+    
+    private function is_trivial($term) {
+        return strcasecmp($term, "a") == 0
+            || strcasecmp($term, "and") == 0
+            || strcasecmp($term, "it") == 0
+            || strcasecmp($term, "the") == 0
+            || strcasecmp($term, "but") == 0
+            || strcasecmp($term, "by") == 0
+            || strcasecmp($term, "i") == 0
+            || strcasecmp($term, "for") == 0;
+    }
+    
+    
+    // quotes
+    // first word
+    // last word
+    // other non-trivial words
+    private function get_prioritized_terms($search) {
+        $terms = $this->get_terms($search);          
+        $out = array();
+        $len = count($terms);
+        if ($len < 1) return $out;
+        
+        $first = '';
+        $last = '';
+
+        // quoted non-trivial terms
+        foreach ($terms as $t) {
+            if (!$t['is_trivial'] && $t['was_quoted']) $out[] = $t['term'];
+        }
+        
+        // first non-trivial term not quoted
+        foreach ($terms as $t) {
+            if (!$t['is_trivial'] && !$t['was_quoted']) {
+                $first = $t['term'];
+                $out[] = $first;
+                foreach ($t['synonyms'] as $s) {
+                    $out[] = $s;
+                }
+                break;
+            }
+        }
+        
+        // last non-trivial term not quoted
+        for ($i = $len - 1; $i >= 0; --$i) {
+            if (!$terms[$i]['is_trivial'] && !$terms[$i]['was_quoted'] && $terms[$i]['term'] != $first) {
+                $last = $terms[$i]['term'];
+                $out[] = $last;
+                foreach ($terms[$i]['synonyms'] as $s) {
+                    $out[] = $s;
+                }
+                break;
+            }
+        }
+        
+        // other non-trivial terms not quoted
+        foreach ($terms as $t) {
+            if (!$t['is_trivial'] && !$t['was_quoted'] && $t['term'] != $first && $t['term'] != $last) {
+                $out[] = $t['term'];
+            }
+        }
+        
+        return array_unique($out);
+    }
+    
+    /*private function prepare_search_terms($search) {
+        // Find terms in quotes first
+        $terms = array();
+        get_quoted_terms($search, $terms);
+        // Remove the quoted terms
+        foreach ($terms as $t) {
+            $search = str_replace('"'.$t.'"', '', $search);
+        }
+        // Remove any remaining quotes
+        $search = str_replace('"', '', $search);
+        // The rest of the search terms are divided by non-alphanumeric characters (except apostrophes)      
+        $words = preg_split(preg_quote('/[^a-zA-Z0-9\']+/'), $search, null, PREG_SPLIT_NO_EMPTY);
+        foreach ($words as $w) {            
+            $terms[] = $w;
+            // Words with apostrophes are added with and without them.
+            if (strpos($w, "'") >= 0) {
+                $terms[] = str_replace("'", '', $w);
+            }
+        }
+        return $terms;
+    }
+    
+    private function get_quoted_terms($search, &$terms, $start = 0) {
+        if ($start >= strlen($search) - 2) return;
+        $pos1 = strpos($search, '"', $start);
+        $pos2 = strpos($search, '"', $pos1 + 1);
+        if ($pos2 > ($pos1 + 2)) {
+            $i = count($terms);
+            $terms[] = substr($search, $pos1 + 1, $pos2 - $pos1 - 1);
+        }  
+        get_quoted_terms($search, $terms, $pos2 + 1);   
+    }   */     
+    
+    // Search all
+    function search_all($search) {
+        $search = $this->clean_user_input($search);
+        $terms = $this->get_prioritized_terms($search);       
+        
+        $results = array();
+        
+        $person         = $this->simple_person_search($search);
+        $location       = $this->simple_location_search($search);
+        $specialty      =  $this->simple_specialty_search($search);
+        $organization   = $this->simple_organization_search($search);
+        $link           = $this->simple_link_search($search);   
+        
+        $count['person']        = count($person);
+        $count['location']      = count($location);
+        $count['specialty']     = count($specialty);
+        $count['organization']  = count($organization);
+        $count['link']          = count($link);
+                
+        $max = max($count);
+        for ($i = 0; $i < $max; ++$i) {
+            if ($i < $count['person'])       $results[] = $person[$i];
+            if ($i < $count['location'])     $results[] = $location[$i];
+            if ($i < $count['specialty'])    $results[] = $specialty[$i];
+            if ($i < $count['organization']) $results[] = $organization[$i];
+            if ($i < $count['link'])         $results[] = $link[$i];
+        }
+        
+        $term_results = array();
+        $term_count = array();
+        $len = count($terms);
+        if ($len < 2) return $results;
+        // terms
+      
+        for ($i = 0; $i < $len; ++$i) {
+       
+            $person         = $this->simple_person_search($terms[$i]);
+            $location       = $this->simple_location_search($terms[$i]);
+            $specialty      = $this->simple_specialty_search($terms[$i]);
+            $organization   = $this->simple_organization_search($terms[$i]);
+            $link           = $this->simple_link_search($terms[$i]);   
+            
+            $count['person']        = count($person);
+            $count['location']      = count($location);
+            $count['specialty']     = count($specialty);
+            $count['organization']  = count($organization);
+            $count['link']          = count($link);
+ 
+            $max = max($count);                             
+            for ($j = 0; $j < $max; ++$j) {
+                if ($j < $count['person'])       $term_results[$i][] = $person[$j];
+                if ($j < $count['location'])     $term_results[$i][] = $location[$j];
+                if ($j < $count['specialty'])    $term_results[$i][] = $specialty[$j];
+                if ($j < $count['organization']) $term_results[$i][] = $organization[$j];
+                if ($j < $count['link'])         $term_results[$i][] = $link[$j];
+            }
+     
+            $term_count[$i] = count($term_results[$i]);
+        }
+//echo nl2br(print_r($term_count, true));        
+        uasort($term_count, array("DatabaseInterface", "order_terms"));
+//echo nl2br(print_r($term_count, true));
+        foreach (array_keys($term_count) as $i) {
+            $results = array_merge($results, $term_results[$i]);
+        }   
+        
+        return $results;
+    }
+    
+    private static function order_terms($count1, $count2) {  
+        if ($count1 * 2 < $count2) return -1;
+        elseif ($count1 > $count2 * 2) return 1;
+        else return 0;
+    }
+    
+    private function simple_link_search($string) {
+        $sql = "select * from link"
+            . " where link.link like '%$string%'"
+            . " or title like '%$string%'"
+            . ";";
+        return $this->db->query($sql);
+    }
+    
+    private function simple_organization_search($string) {
+        $sql = "select * from organization"
+            . " where organization.organization like '%$string%'"            
+            . ";";
+        return $this->db->query($sql);
+    }
+    
+    private function simple_location_search($string) {
+        $sql = "select * from organization_location"
+            . " where address like '%$string%'"   
+            . " or city like '%$string%'"      
+            . " or state like '%$string%'"
+            . " or zip like '%$string%'"
+            . " or email1 like '%$string%'"
+            . " or email2 like '%$string%'"
+            . " or phone1 like '%$string%'"
+            . " or phone2 like '%$string%'"
+            . ";";
+        return $this->db->query($sql);
+    }
+    
+    private function simple_person_search($string) {
+        $sql = "select * from person"
+            . " where first_name like '%$string%'"   
+            . " or last_name like '%$string%'"   
+            . " or address like '%$string%'"   
+            . " or city like '%$string%'"      
+            . " or state like '%$string%'"
+            . " or zip like '%$string%'"
+            . " or email like '%$string%'"
+            . " or phone_1 like '%$string%'"
+            . " or phone_2 like '%$string%'"
+            . " or notes like '%$string%'"
+            . ";";
+        return $this->db->query($sql);
+    }
+    
+    private function simple_specialty_search($string) {
+        $sql = "select * from specialty"
+            . " where specialty.specialty like '%$string%'"            
+            . ";";
+        return $this->db->query($sql);
+    }
+    
+    //test function for searching organizations with certain area    
+    function locations_search($lat, $lon)
+    {    	
+    	$sql = "select organization_location.address , organization_location.city , organization_location.state , organization_location.zip , organization_location.latitude , organization_location.longitude from organization_location where latitude <= {$lat} + 0.1 and latitude >= {$lat} - 0.1 and longitude <= {$lon} + 0.1 and longitude >= {$lon} - 0.1";
+    	return $this->db->query($sql);
     }
     
     // TODO these confirm remove functions should be called inside 'edit_flag'.
