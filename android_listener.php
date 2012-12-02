@@ -60,6 +60,11 @@
             $request[RequestField::PERSON_ID]
         );
     }
+    elseif ($request[RequestField::REQUEST_TYPE] == RequestType::DETAIL_LOCATION) {        
+        $results = $q->location(
+            $request[RequestField::LOCATION_ID]
+        );
+    }
     elseif ($request[RequestField::REQUEST_TYPE] == RequestType::CREATE_PERSON) {                
         $results = $q->create_person(
             $request[RequestField::FIRST_NAME],
@@ -216,9 +221,19 @@
             $request[RequestField::SPECIALTY_ID]
         );
     }
-    
-    
-
+    elseif ($request[RequestField::REQUEST_TYPE] == RequestType::CHECK_IN) {                
+        $results = $q->check_in(
+            $request[RequestField::MEMBER_ID],
+            $request[RequestField::LATITUDE],
+            $request[RequestField::LONGITUDE]            
+        );
+    }
+    elseif ($request[RequestField::REQUEST_TYPE] == RequestType::LIST_MAP) {                
+        $results = $q->list_map(
+            $request[RequestField::LATITUDE],
+            $request[RequestField::LONGITUDE]            
+        );
+    }
         
     $response[ResponseField::RESULTS] = $results;
 
@@ -227,6 +242,7 @@
     $response[ResponseField::RESPONSE_MESSAGE] = "(didn't check for errors)";
         
     $response = json_encode($response);
+    $response = str_replace(':null', ':""', $response);
     $hash_resp = Secure::hash($response);
 
     // Format for app

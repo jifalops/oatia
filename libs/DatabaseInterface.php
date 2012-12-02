@@ -27,6 +27,11 @@ class DatabaseInterface {
         $string = preg_replace('/\s+/', ' ', $string);
         return $this->db->escape($string);
     }
+    
+    function check_in($id, $lat, $lon) {
+        $sql = 'update member set latitude='.$lat.', longitude='.$lon.', location_time=now() where member_id='.$id.';';
+        return $this->db->query($sql);
+    }
 
     //2Get Specialties
     function specialty($start = 0)
@@ -108,15 +113,36 @@ class DatabaseInterface {
     
     //10Get Person Detail
     function personDetail($id)
-    {    	
-    	$sql = "select first_name,last_name,role.role,username,member.email as 'user email',address,city,state,zip,person.email,phone_1,phone_2,notes,`person`.`remove`,modified_by,modified_time from person,member,role where person.person_id=member.person_id and member.role_id=role.role_id and person.person_id={$id}";
-    	return $this->db->query($sql);
+    {    	 
+    	$sql = "select p.person_id, m.location_time, m.latitude, m.longitude, p.first_name, p.last_name, p.address, p.city, p.state, p.zip, p.email, p.phone1, p.phone2, p.notes from person as p, member as m where p.person_id={$id} and m.person_id=p.person_id";
+    	$person = $this->db->query($sql);
+    	$sql = 'select s.specialty_id, s.specialty from person_specialty as ps, specialty as s where ps.person_id='.$id.' and s.specialty_id=ps.specialty_id;';
+    	$specialties = $this->db->query($sql);
+    	$sql = 'select po.organization_id, o.organization from person_organization as po, organization as o where po.person_id='.$id.' and o.organization_id=po.organization_id;';
+    	$organizations = $this->db->query($sql);
+    	$s = '';
+    	$len = count($specialties);
+    	for ($i = 0; $i < $len; ++$i) {
+    	    if ($i == 0) $s = $specialties[$i]['specialty'];
+    	    else $s .= '<>]&' . $specialties[$i]['specialty'];  // Don't change the delimiter!
+    	}
+    	$person[0]['specialties'] = $s;
+
+    	$o = '';
+    	$len = count($organizations);
+    	for ($i = 0; $i < $len; ++$i) {
+    	    if ($i == 0) $o = $organizations[$i]['organization'];
+    	    else $o .= '<>]&' . $organizations[$i]['organization'];  // Don't change the delimiter!
+    	}
+    	$person[0]['organizations'] = $o;
+    	
+    	return $person;
     }
     
     //11Get (Organization) Location Detail
     function location($location_id)
     {    	
-    	$sql = "select organization_location.address , organization_location.city , organization_location.state , organization_location.zip , organization_location.latitude , organization_location.longitude from organization_location where location_id = {$location_id}";
+    	$sql = "select l.location_id, l.is_primary, l.address, l.city, l.state, l.zip, l.latitude, l.longitude, l.email1, l.email2, l.phone1, l.phone2, o.organization, o.organization_id from organization_location as l, organization as o where location_id = {$location_id} and o.organization_id=l.organization_id";
     	return $this->db->query($sql);
     }
     
@@ -158,13 +184,13 @@ class DatabaseInterface {
     //15Create Person
     function create_person($first_name , $last_name , $address , $city , $state , $zip , $phone1 , $latitude = "", $longitude = "", $email = "", $phone2 = "", $note = "")
     {
-    	$sql = "insert into person set first_name ='{$first_name}', last_name ='{$last_name}', address ='{$address}', city ='{$city}', state ='{$state}', zip ='{$zip}', phone_1='{$phone1}', modified_time = now()";
+    	$sql = "insert into person set first_name ='{$first_name}', last_name ='{$last_name}', address ='{$address}', city ='{$city}', state ='{$state}', zip ='{$zip}', phone1='{$phone1}', modified_time = now()";
     	if($latitude != "" && $longitude != "")
     		$sql = $sql.", latitude = {$latitude}, longitude = {$longitude}";
     	if($email != "")
     		$sql = $sql.", email = '{$email}'";
     	if($phone2 != "")
-    		$sql = $sql.", phone_2 = '{$phone2}'";
+    		$sql = $sql.", phone2 = '{$phone2}'";
     	if($note != "")
     		$sql = $sql.", notes = '{$note}'";
     	
@@ -297,14 +323,14 @@ class DatabaseInterface {
     		$sql .= ", state ='{$state}'";
     	if($zip != "")
     		$sql .= ", zip ='{$zip}'";
-    	if($phone_1 != "")
-    		$sql .= ", phone_1 =='{$phone1}'";
+    	if($phone1 != "")
+    		$sql .= ", phone1 =='{$phone1}'";
     	if($latitude != "" && $longitude != "")
     		$sql = $sql.", latitude = {$latitude}, longitude = {$longitude}";
     	if($email != "")
     		$sql = $sql.", email = '{$email}'";
     	if($phone2 != "")
-    		$sql = $sql.", phone_2 = '{$phone2}'";
+    		$sql = $sql.", phone2 = '{$phone2}'";
     	if($note != "")
     		$sql = $sql.", notes = '{$note}'";
     	if($modified_by != "")
@@ -330,7 +356,7 @@ class DatabaseInterface {
     		$sql .= ", state ='{$state}'";
     	if($zip != "")
     		$sql .= ", zip ='{$zip}'";
-    	if($phone_1 != "")
+    	if($phone1 != "")
     		$sql .= ", phone1 =='{$phone1}'";
     	if($latitude != "" && $longitude != "")
     		$sql = $sql.", latitude = {$latitude}, longitude = {$longitude}";
@@ -559,6 +585,7 @@ class DatabaseInterface {
     // Search all
     function search_all($search, $start = 0) {
         $search = $this->clean_user_input($search);
+        if (strlen($search) == 0) return;
         $terms = $this->get_prioritized_terms($search);       
         
         $results = array();
@@ -665,16 +692,16 @@ class DatabaseInterface {
     }
     
     private function simple_location_search($string) {
-        $sql = "select * from organization_location"
-            . " where address like '%$string%'"   
-            . " or city like '%$string%'"      
-            . " or state like '%$string%'"
-            . " or zip like '%$string%'"
-            . " or email1 like '%$string%'"
-            . " or email2 like '%$string%'"
-            . " or phone1 like '%$string%'"
-            . " or phone2 like '%$string%'"
-
+        $sql = "select ol.*, o.organization from organization_location as ol, organization as o"
+            . " where (address like '%$string%'"   
+            . " or ol.city like '%$string%'"      
+            . " or ol.state like '%$string%'"
+            . " or ol.zip like '%$string%'"
+            . " or ol.email1 like '%$string%'"
+            . " or ol.email2 like '%$string%'"
+            . " or ol.phone1 like '%$string%'"
+            . " or ol.phone2 like '%$string%')"
+            . " and o.organization_id=ol.organization_id"
             . ";";
         return $this->db->query($sql);
     }
@@ -688,8 +715,8 @@ class DatabaseInterface {
             . " or state like '%$string%'"
             . " or zip like '%$string%'"
             . " or email like '%$string%'"
-            . " or phone_1 like '%$string%'"
-            . " or phone_2 like '%$string%'"
+            . " or phone1 like '%$string%'"
+            . " or phone2 like '%$string%'"
             . " or notes like '%$string%'"
             . ";";
         return $this->db->query($sql);
@@ -708,7 +735,7 @@ class DatabaseInterface {
     	$locations = $this->db->query($sql);    	
     	$sql = "select person_id, first_name, last_name, address , city , state , zip , latitude , longitude from person where latitude <= {$lat} + 1 and latitude >= {$lat} - 1 and longitude <= {$lon} + 1 and longitude >= {$lon} - 1";
     	$people = $this->db->query($sql);
-    	$sql = "select m.member_id, m.person_id, m.latitude , m.longitude, p.first_name, p.last_name from member as m, person as p where latitude <= {$lat} + 1 and latitude >= {$lat} - 1 and longitude <= {$lon} + 1 and longitude >= {$lon} - 1 and p.person_id=m.person_id";
+    	$sql = "select m.member_id, m.person_id, m.latitude , m.longitude, m.location_time, p.first_name, p.last_name from member as m, person as p where m.latitude <= {$lat} + 1 and m.latitude >= {$lat} - 1 and m.longitude <= {$lon} + 1 and m.longitude >= {$lon} - 1 and p.person_id=m.person_id";
     	$members = $this->db->query($sql);
     	return array_merge($locations, $people, $members);
     }
