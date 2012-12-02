@@ -13,7 +13,7 @@ require_once('DatabaseContract/TableRole.php');
 require_once('DatabaseContract/TableSpecialty.php');
 
 class DatabaseInterface {
-    const LIMIT = 30;
+    const LIMIT = 1000; // Using a real limit won't be ready by monday
     
     private $db;
     
@@ -93,7 +93,7 @@ class DatabaseInterface {
     //8Get People by Specialty
     function specialty_person($specialty_id, $start = 0)
     {    	
-    	$sql = "select person.first_name , person.last_name from person where person_id in (select person_specialty.person_id from person_specialty where specialty_id ={$specialty_id})";
+    	$sql = "select person.person_id, person.city, person.state, person.zip, person.first_name , person.last_name from person where person_id in (select person_specialty.person_id from person_specialty where specialty_id ={$specialty_id})";
     	$sql = $sql." limit {$start},".self::LIMIT;
     	return $this->db->query($sql);
     }
@@ -101,7 +101,7 @@ class DatabaseInterface {
     //9Get Organization Locations
     function organization_locations($organization_id, $start = 0)
     {    	
-    	$sql = "select organization_location.location_id , organization_location.address from organization_location where organization_id = {$organization_id}";
+    	$sql = "select organization_location.location_id , organization_location.is_primary, organization_location.city, organization_location.state, organization_location.zip,  organization_location.address from organization_location where organization_id = {$organization_id}";
     	$sql = $sql." limit {$start},".self::LIMIT;
     	return $this->db->query($sql);
     }
@@ -701,12 +701,16 @@ class DatabaseInterface {
             . ";";
         return $this->db->query($sql);
     }
-    
-    //test function for searching organizations with certain area    
-    function locations_search($lat, $lon)
+        
+    function list_map($lat, $lon)
     {    	
-    	$sql = "select organization_location.address , organization_location.city , organization_location.state , organization_location.zip , organization_location.latitude , organization_location.longitude from organization_location where latitude <= {$lat} + 0.1 and latitude >= {$lat} - 0.1 and longitude <= {$lon} + 0.1 and longitude >= {$lon} - 0.1";
-    	return $this->db->query($sql);
+    	$sql = "select l.location_id, l.is_primary, l.address , l.city , l.state , l.zip , l.latitude , l.longitude, o.organization from organization_location as l, organization as o where latitude <= {$lat} + 1 and latitude >= {$lat} - 1 and longitude <= {$lon} + 1 and longitude >= {$lon} - 1 and o.organization_id=l.organization_id";
+    	$locations = $this->db->query($sql);    	
+    	$sql = "select person_id, first_name, last_name, address , city , state , zip , latitude , longitude from person where latitude <= {$lat} + 1 and latitude >= {$lat} - 1 and longitude <= {$lon} + 1 and longitude >= {$lon} - 1";
+    	$people = $this->db->query($sql);
+    	$sql = "select m.member_id, m.person_id, m.latitude , m.longitude, p.first_name, p.last_name from member as m, person as p where latitude <= {$lat} + 1 and latitude >= {$lat} - 1 and longitude <= {$lon} + 1 and longitude >= {$lon} - 1 and p.person_id=m.person_id";
+    	$members = $this->db->query($sql);
+    	return array_merge($locations, $people, $members);
     }
     
     // TODO these confirm remove functions should be called inside 'edit_flag'.
