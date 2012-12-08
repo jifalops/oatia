@@ -69,7 +69,7 @@
         $results = $q->create_person(
             $request[RequestField::FIRST_NAME],
             $request[RequestField::LAST_NAME],
-            $request[RequestField::ADRESS],
+            $request[RequestField::ADDRESS],
             $request[RequestField::CITY],
             $request[RequestField::STATE],
             $request[RequestField::ZIP],
@@ -108,7 +108,7 @@
         $results = $q->create_location(
             $request[RequestField::ORGANIZATION_ID],
             $request[RequestField::PRIMARY],
-            $request[RequestField::ADRESS],
+            $request[RequestField::ADDRESS],
             $request[RequestField::CITY],
             $request[RequestField::STATE],
             $request[RequestField::ZIP],            
@@ -151,7 +151,7 @@
             $request[RequestField::PERSON_ID],
             $request[RequestField::FIRST_NAME],
             $request[RequestField::LAST_NAME],
-            $request[RequestField::ADRESS],
+            $request[RequestField::ADDRESS],
             $request[RequestField::CITY],
             $request[RequestField::STATE],
             $request[RequestField::ZIP],
@@ -169,7 +169,7 @@
             $request[RequestField::LOCATION_ID],
             $request[RequestField::ORGANIZATION_ID],
             $request[RequestField::PRIMARY],
-            $request[RequestField::ADRESS],
+            $request[RequestField::ADDRESS],
             $request[RequestField::CITY],
             $request[RequestField::STATE],
             $request[RequestField::ZIP],            
@@ -234,7 +234,26 @@
             $request[RequestField::LONGITUDE]            
         );
     }
-        
+    
+    $key = '0iINBr1ZSri9x_vs_3IYtXE8X2dO0plUIlYTa3g';
+    $geo = new GoogleGeocoder($key);
+    
+    $sql =  'select person_id, address, city, state, zip from person where latitude is null or longitude is null;';    
+    $missing = $db->query($sql);
+    foreach ($missing as $m) {
+        $info = $geo->get_info($m['address']." ".$m['city'].", ".$m['state']." ".$m['zip']);
+        $sql = 'update person set latitude='.$info['latitude'].', longitude='.$info['longitude'].' where person_id='.$m['person_id'].';';
+        $db->query($sql);
+    }
+    
+    $sql =  'select location_id, address, city, state, zip from organization_location where latitude is null or longitude is null;';    
+    $missing = $db->query($sql);
+    foreach ($missing as $m) {
+        $info = $geo->get_info($m['address']." ".$m['city'].", ".$m['state']." ".$m['zip']);
+        $sql = 'update organization_location set latitude='.$info['latitude'].', longitude='.$info['longitude'].' where location_id='.$m['location_id'].';';
+        $db->query($sql);
+    }
+       
     $response[ResponseField::RESULTS] = $results;
 
     // TODO actually check for errors    

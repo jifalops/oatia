@@ -1,18 +1,7 @@
 <?php
 include('procedures.php');
-
-$type = $_POST['type'];
-$order = $_POST['order'];
-
-echo $type;
-echo $order;
-echo "<br />";
-
+$specialty = $_POST['specialty'];
 $con = getConnection();
-
-$query_results = get_remove_approved($type, $con, $order);
-
-mysql_close($con);
-
-print_results($query_results);
+if(confirm_remove_specialty($con, $specialty))
+	echo "<p>Remove process confirmed.</p><script>setTimeout(function(){window.location.replace('http://businesshours.net/oatia/mxuTest/specialties.php?remove={$specialty}')},1000);</script>";
 ?>

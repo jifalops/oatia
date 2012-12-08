@@ -324,7 +324,7 @@ class DatabaseInterface {
     	if($zip != "")
     		$sql .= ", zip ='{$zip}'";
     	if($phone1 != "")
-    		$sql .= ", phone1 =='{$phone1}'";
+    		$sql .= ", phone1 ='{$phone1}'";
     	if($latitude != "" && $longitude != "")
     		$sql = $sql.", latitude = {$latitude}, longitude = {$longitude}";
     	if($email != "")
@@ -357,7 +357,7 @@ class DatabaseInterface {
     	if($zip != "")
     		$sql .= ", zip ='{$zip}'";
     	if($phone1 != "")
-    		$sql .= ", phone1 =='{$phone1}'";
+    		$sql .= ", phone1 ='{$phone1}'";
     	if($latitude != "" && $longitude != "")
     		$sql = $sql.", latitude = {$latitude}, longitude = {$longitude}";
     	if($email1 != "")

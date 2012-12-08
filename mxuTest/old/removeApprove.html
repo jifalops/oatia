@@ -1,4 +1,4 @@
-<form method="post" action="./removeList.php">
+<form method="post" action="./removeApproved.php">
 select type:
 <select name="type">
 <option value="AG">Agency</option>
@@ -9,6 +9,11 @@ select type:
 <option value="SP">Specialty</option>
 </select>
 <br />
+select order:
+<select name="order">
+<option value="FF">Newest first</option>
+<option value="LF">Oldest first</option>
+</select>
 <br />
 <input type="submit" />
 </form>

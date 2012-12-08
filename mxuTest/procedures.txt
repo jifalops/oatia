@@ -3,7 +3,7 @@ include('../header.php');
 //set records limit
 define(LIMIT, '50');
 
-function getConnection()
+function get_connection()
 {
 	$connection = mysql_connect(Secure::DB_HOST, Secure::DB_USERNAME, Secure::DB_PASSWORD);
 	if (!$connection)
@@ -21,15 +21,15 @@ function print_results($resources)
 	}
 }
 
-function showerror( )
+function show_error( )
 {
 
       die("Error " . mysql_errno( ) . " : " . mysql_error( ));
 
 }
 
-//2Get Specialties
-function specialty($connection, $start = 0)
+//Get Specialties
+function get_specialty($connection, $start = 0)
 {
 	$db_selected = mysql_select_db(Secure::DB_DATABASE, $connection);
 	$sql = "select specialty.specialty_id , specialty.specialty from specialty where remove_approved = 0";
@@ -40,8 +40,8 @@ function specialty($connection, $start = 0)
 	else
 		return $resource;
 }
-//4Get Organizations 
-function organization($connection, $start = 0)
+//Get Organizations 
+function get_organization($connection, $start = 0)
 {
 	$db_selected = mysql_select_db(Secure::DB_DATABASE, $connection);
 	$sql = "select organization.organization_id , organization.organization from organization where remove_approved = 0";
@@ -52,8 +52,8 @@ function organization($connection, $start = 0)
 	else
 		return $resource;
 }
-//5Get Links
-function links($connection, $start = 0)
+//Get Links
+function get_links($connection, $start = 0)
 {
 	$db_selected = mysql_select_db(Secure::DB_DATABASE, $connection);
 	$sql = "select link.link_id , link.link , link.title from link where remove_approved = 0";
@@ -64,7 +64,7 @@ function links($connection, $start = 0)
 	else
 		return $resource;
 }
-//6Get Pending Removals
+//Get Pending Removals
 function get_pending_remove( $table, $connection, $start = 0)
 {
 	$sql = "select ";
@@ -98,8 +98,8 @@ function get_pending_remove( $table, $connection, $start = 0)
 	else
 		return $resource;
 }
-//7Get Roles
-function role($connection, $start = 0)
+//Get Roles
+function get_role($connection, $start = 0)
 {
 	$db_selected = mysql_select_db(Secure::DB_DATABASE, $connection);
 	$sql = "select role.role_id , role.role from role";
@@ -110,8 +110,8 @@ function role($connection, $start = 0)
 	else
 		return $resource;
 }
-//8Get People by Specialty
-function specialty_person($specialty_id, $connection, $start = 0)
+//Get People by Specialty
+function get_specialty_person($specialty_id, $connection, $start = 0)
 {
 	$db_selected = mysql_select_db(Secure::DB_DATABASE, $connection);
 	$sql = "select person.person_id, person.first_name , person.last_name from person where person_id in (select person_specialty.person_id from person_specialty where specialty_id ={$specialty_id}) and  remove_approved = 0";
@@ -134,8 +134,8 @@ function locations_search($lat, $lon, $connection, $start = 0)
 	else
 		return $resource;
 }
-//9Get Organization Locations
-function organization_locations($organization_id, $connection, $start = 0)
+//Get Organization Locations
+function get_organization_locations($organization_id, $connection, $start = 0)
 {
 	$db_selected = mysql_select_db(Secure::DB_DATABASE, $connection);
 	$sql = "select organization_location.location_id , organization_location.address ,  from organization_location where organization_id = {$organization_id} and remove_approved = 0";
@@ -146,8 +146,8 @@ function organization_locations($organization_id, $connection, $start = 0)
 	else
 		return $resource;
 }
-//10Get Person Detail
-function person_detail($id, $connection, $start = 0)
+//Get Person Detail
+function get_detail_person($id, $connection, $start = 0)
 {
 	$db_selected = mysql_select_db(Secure::DB_DATABASE, $connection);
 	$sql = "select first_name,last_name,role.role,username,member.email as 'user email',address,city,state,zip,person.email,phone1,phone2,notes,`person`.`remove`,modified_by,modified_time from person,member,role where person.person_id=member.person_id and member.role_id=role.role_id and person.person_id={$id}";
@@ -158,8 +158,8 @@ function person_detail($id, $connection, $start = 0)
 	else
 		return $resource;
 }
-//11Get (Organization) Location Detail
-function location_detail($location_id, $connection, $start = 0)
+//Get (Organization) Location Detail
+function get_detail_location($location_id, $connection, $start = 0)
 {
 	$db_selected = mysql_select_db(Secure::DB_DATABASE, $connection);
 	$sql = "select organization_location.address , organization_location.city , organization_location.state , organization_location.zip , organization_location.latitude , organization_location.longitude from organization_location where location_id = {$location_id}";
@@ -170,7 +170,7 @@ function location_detail($location_id, $connection, $start = 0)
 	else
 		return $resource;
 }
-//12Get Approved Removals
+//Get Approved Removals
 function get_remove_approved( $table, $connection, $order = "FF", $start = 0)
 {
 	$sql = "select ";
@@ -208,7 +208,7 @@ function get_remove_approved( $table, $connection, $order = "FF", $start = 0)
 		return $resource;
 }
 
-//15Create Person
+//Create Person
 function create_person($connection , $first_name , $last_name , $address , $city , $state , $zip , $phone1 , $latitude = "", $longitude = "", $email = "", $phone2 = "", $note = "")
 {
 	$sql = "insert into person set first_name ='{$first_name}', last_name ='{$last_name}', address ='{$address}', city ='{$city}', state ='{$state}', zip ='{$zip}', phone_1 =='{$phone1}', modified_time = now()";
@@ -236,7 +236,7 @@ function create_person($connection , $first_name , $last_name , $address , $city
 		}
 	}
 }
-//16 - Create Specialty
+// - Create Specialty
 function create_specialty($connection , $specialty)
 {
 	$sql = "insert into specialty set specialty ='{$specialty}'";
@@ -256,7 +256,7 @@ function create_specialty($connection , $specialty)
 		}
 	}
 }
-//17 - Create Organization
+// - Create Organization
 function create_organization($connection , $organization)
 {
 	$sql = "insert into organization set organization ='{$organization}'";
@@ -276,7 +276,7 @@ function create_organization($connection , $organization)
 		}
 	}
 }
-//18 - Create Link
+// - Create Link
 function create_link($connection , $role_id , $link , $title , $top_level = 0, $organization_id = "", $location_id = "", $member_id = "", $person_id = "", $specialty_id = "")
 {
 	$sql = "insert into link set role_id ={$role_id}, link ='{$link}', title ='{$title}', top_level ={$top_level}";
@@ -306,7 +306,7 @@ function create_link($connection , $role_id , $link , $title , $top_level = 0, $
 		}
 	}
 }
-//19 - Create Organization Location
+// - Create Organization Location
 function create_location($connection , $organization_id , $primary , $address , $city , $state , $zip , $latitude , $longitude , $email1 = "", $email2 = "", $phone1 = "", $phone2 = "")
 {
 	$sql = "insert into organization_location set organization_id ={$organization_id}, primary ={$primary}, address ='{$address}', city ='{$city}', state ='{$state}', zip ='{$zip}', latitude = {$latitude}, longitude = {$longitude}, modified_time = now()";
@@ -334,7 +334,40 @@ function create_location($connection , $organization_id , $primary , $address , 
 		}
 	}
 }
-//20 - Edit Specialty
+// - Flag For Removal
+function create_flag($connection, $flag_by, $flag_comment = "", $organization_id="", $location_id="", $link_id="", $member_id="", $person_id="", $specialty_id="")
+{
+	$sql = "insert into flag set flag_by = {$flag_by}, flag_time = now()";
+	if($flag_comment != "")
+		$sql .= ", flag_comment = '{$flag_comment}'";
+	if($organization_id != "")
+		$sql .= ", organization_id = {$organization_id}";
+	if($location_id != "")
+		$sql .= ", location_id = {$location_id}";
+	if($link_id != "")
+		$sql .= ", link_id = {$link_id}";
+	if($member_id != "")
+		$sql .= ", member_id = {$member_id}";
+	if($person_id != "")
+		$sql .= ", person_id = {$person_id}";
+	if($specialty_id != "")
+		$sql .= ", specialty_id = {$specialty_id}";
+	$db_selected = mysql_select_db(Secure::DB_DATABASE, $connection);
+	if(!($resource = @ mysql_query($sql, $connection)))
+		showerror();
+		//echo $sql;
+	else
+	{
+		if(!($return_values = @ mysql_query("select flag_id from flag order by flag_id DESC limit 1", $connection)))
+			showerror();
+		else
+		{
+			$return = mysql_fetch_array($return_values);
+			return $return[0];
+		}
+	}
+}
+// - Edit Specialty
 function edit_specialty($connection , $specialty_id ,$specialty)
 {
 	$sql = "update specialty set specialty = '{$specialty}' where specialty_id = {$specialty_id}";
@@ -345,7 +378,7 @@ function edit_specialty($connection , $specialty_id ,$specialty)
 	else
 		return $resource;
 }
-//21 - Edit Organization
+// - Edit Organization
 function edit_organization($connection , $organization_id, $organization)
 {
 	$sql = "update organization set organization = '{$organization}' where organization_id = {$organization_id}";
@@ -356,7 +389,7 @@ function edit_organization($connection , $organization_id, $organization)
 	else
 		return $resource;
 }
-//22 - Edit Link
+// - Edit Link
 function edit_link($connection , $link_id, $role_id ="", $link ="", $title ="", $top_level = "", $organization_id = "", $location_id = "", $member_id = "", $person_id = "", $specialty_id = "")
 {
 	$sql = "update link set link_id = {$link_id}";
@@ -386,7 +419,7 @@ function edit_link($connection , $link_id, $role_id ="", $link ="", $title ="", 
 	else
 		return $resource;
 }
-//23 - Edit Person/Member
+// - Edit Person/Member
 function edit_person($connection , $person_id ,$first_name ="", $last_name ="", $address ="", $city ="", $state ="", $zip ="", $phone1 ="", $latitude = "", $longitude = "", $email = "", $phone2 = "", $note = "", $modified_by = "")
 {
 	$sql = "update person set modified_time = now()";
@@ -423,7 +456,7 @@ function edit_person($connection , $person_id ,$first_name ="", $last_name ="", 
 	else
 		return $resource;
 }
-//24 - Edit Organization Location
+// - Edit Organization Location
 function edit_organization_location($connection , $location_id ,$organization_id ="", $primary ="", $address ="", $city ="", $state ="", $zip ="", $latitude = "", $longitude = "", $email1 = "", $email2 = "", $phone1 ="", $phone2 = "", $modified_by = "")
 {
 	$sql = "update organization_location set modified_time = now()";
@@ -460,7 +493,7 @@ function edit_organization_location($connection , $location_id ,$organization_id
 	else
 		return $resource;
 }
-//25 - Edit Flagged Item
+// - Edit Flagged Item
 function edit_flag($connection, $flag_id, $verdict = "", $verdict_by = "", $verdict_comment = "", $organization_id = "", $location_id = "", $link_id = "", $member_id = "", $person_id = "", $specialty_id = "")
 {
 	$sql = "update flag set verdict_time = now()";
@@ -490,7 +523,7 @@ function edit_flag($connection, $flag_id, $verdict = "", $verdict_by = "", $verd
 	else
 		return $resource;
 }
-//26 - Edit Role
+// - Edit Role
 function edit_role($connection, $role_id, $role = "" , $edits_24h = "" ,  $edit_top_links = "" ,  $flag_for_removal = "" ,  $approve_removal = "" ,  $unremove = "" ,  $change_member_roles = "" ,  $manage_roles = "" )
 {
 	$sql = "update role set $role_id = {$role_id}";
@@ -518,39 +551,7 @@ function edit_role($connection, $role_id, $role = "" , $edits_24h = "" ,  $edit_
 	else
 		return $resource;
 }
-//27 - Flag For Removal
-function create_flag($connection, $flag_by, $flag_comment = "", $organization_id="", $location_id="", $link_id="", $member_id="", $person_id="", $specialty_id="")
-{
-	$sql = "insert into flag set flag_by = {$flag_by}, flag_time = now()";
-	if($flag_comment != "")
-		$sql .= ", flag_comment = '{$flag_comment}'";
-	if($organization_id != "")
-		$sql .= ", organization_id = {$organization_id}";
-	if($location_id != "")
-		$sql .= ", location_id = {$location_id}";
-	if($link_id != "")
-		$sql .= ", link_id = {$link_id}";
-	if($member_id != "")
-		$sql .= ", member_id = {$member_id}";
-	if($person_id != "")
-		$sql .= ", person_id = {$person_id}";
-	if($specialty_id != "")
-		$sql .= ", specialty_id = {$specialty_id}";
-	$db_selected = mysql_select_db(Secure::DB_DATABASE, $connection);
-	if(!($resource = @ mysql_query($sql, $connection)))
-		showerror();
-		//echo $sql;
-	else
-	{
-		if(!($return_values = @ mysql_query("select flag_id from flag order by flag_id DESC limit 1", $connection)))
-			showerror();
-		else
-		{
-			$return = mysql_fetch_array($return_values);
-			return $return[0];
-		}
-	}
-}
+
 //remove process
 function remove_person($connection, $person_id)
 { 
